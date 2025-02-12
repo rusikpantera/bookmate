@@ -4,7 +4,7 @@ WORKDIR /app
 
 ARG JAR_FILE=target/my-spring-boot-app.jar
 
-COPY ${JAR_FILE} app.jar
+COPY target/my-spring-boot-app.jar app.jar
 
 EXPOSE 8080
 
