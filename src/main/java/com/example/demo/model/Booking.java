@@ -2,7 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,23 +14,17 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
-    private String bookTitle;
+    @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
-    @Column(nullable = false)
-    private String author;
-
-    @Column(nullable = false)
-    private String isbn;
-
-    @Column(nullable = false)
-    private int quantity;
-
-    @Column
-    private LocalDate publishedDate;
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
 
     @Column(nullable = false)
     private LocalDateTime bookingDate;
@@ -38,37 +32,10 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(String username, String bookTitle, String author, String isbn,LocalDate publishedDate, int quantity, LocalDateTime bookingDate) {
-        this.username = username;
-        this.bookTitle = bookTitle;
+    public Booking(User user, Book book, Author author, LocalDateTime bookingDate) {
+        this.user = user;
+        this.book = book;
         this.author = author;
-        this.isbn = isbn;
-        this.quantity = quantity;
-        this.publishedDate = publishedDate;
         this.bookingDate = bookingDate;
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getBookTitle() { return bookTitle; }
-    public void setBookTitle(String bookTitle) { this.bookTitle = bookTitle; }
-
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
-
-    public String getIsbn() { return isbn; }
-    public void setIsbn(String isbn) { this.isbn = isbn; }
-
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-
-    public LocalDate getPublishedDate() { return publishedDate; }
-    public void setPublishedDate(LocalDate publishedDate) { this.publishedDate = publishedDate; }
-
-    public LocalDateTime getBookingDate() { return bookingDate; }
-    public void setBookingDate(LocalDateTime bookingDate) { this.bookingDate = bookingDate; }
 }

@@ -29,11 +29,11 @@
         </thead>
         <tbody>
         <tr th:each="booking : ${bookings}">
-            <td th:text="${booking.bookTitle}"></td>
-            <td th:text="${booking.author}"></td>
-            <td th:text="${booking.isbn}"></td>
-            <td th:text="${booking.quantity}"></td>
-            <td th:text="${booking.publishedDate}"></td>
+            <td th:text="${booking.book.title}"></td>
+            <td th:text="${booking.author != null ? booking.author.getFullName() : 'Не указан'}"></td>
+            <td th:text="${booking.book.isbn}"></td>
+            <td th:text="${booking.book.quantity}"></td>
+            <td th:text="${booking.book.publishedDate}"></td>
             <td th:text="${booking.bookingDate != null ? #temporals.format(booking.bookingDate, 'dd.MM.yyyy HH:mm') : 'N/A'}"></td>
         </tr>
         </tbody>

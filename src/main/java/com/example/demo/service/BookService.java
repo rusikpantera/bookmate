@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Author;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
+import com.example.demo.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +14,19 @@ import java.util.Optional;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
-    public Book addBook(Book book) {
-        return bookRepository.save(book);
+    public void addBook(Book book) {
+        bookRepository.save(book);
     }
 
-    public Book updateBook(Long id, Book bookDetails) {
+    public void updateBook(Long id, Book bookDetails) {
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Книга с id " + id + " не найдена"));
 
@@ -32,7 +36,7 @@ public class BookService {
         existingBook.setQuantity(bookDetails.getQuantity());
         existingBook.setPublishedDate(bookDetails.getPublishedDate());
 
-        return bookRepository.save(existingBook);
+        bookRepository.save(existingBook);
     }
 
     public void deleteBook(Long id) {
@@ -47,30 +51,19 @@ public class BookService {
         return bookRepository.findByTitleContaining(title);
     }
 
-    public List<Book> findBooksByAuthor(String author) {
-        return bookRepository.findByAuthorContaining(author);
+    public List<Book> findBooksByAuthor(String authorName) {
+        Author author = authorRepository.findByName(authorName);
+        return bookRepository.findByAuthor(author);
     }
 
     public Optional<Book> findBookByIsbn(String isbn) {
         return bookRepository.findByIsbn(isbn);
     }
 
-    public Book bookBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Книга с id " + id + " не найдена"));
-
-        if (book.getQuantity() <= 0) {
-            throw new RuntimeException("Нет доступных экземпляров для бронирования");
-        }
-        book.setQuantity(book.getQuantity() - 1);
-        return bookRepository.save(book);
-    }
-
     public Book getBookById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Книга с id " + id + " не найдена"));
     }
-
     public List<Book> getAvailableBooks() {
         return bookRepository.findByQuantityGreaterThan(0);
     }

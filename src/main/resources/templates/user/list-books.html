@@ -31,13 +31,19 @@
     <form th:action="@{/user/books/search}" method="get" class="mb-3 d-flex justify-content-center" style="gap: 20px">
         <div class="row g-2">
             <div class="col-md-4">
-                <input type="text" name="title" class="form-control" placeholder="Поиск по названию">
+                <label>
+                    <input type="text" name="title" class="form-control" placeholder="Поиск по названию">
+                </label>
             </div>
             <div class="col-md-4">
-                <input type="text" name="author" class="form-control" placeholder="Поиск по автору">
+                <label>
+                    <input type="text" name="author" class="form-control" placeholder="Поиск по автору">
+                </label>
             </div>
             <div class="col-md-4">
-                <input type="text" name="isbn" class="form-control" placeholder="Поиск по ISBN">
+                <label>
+                    <input type="text" name="isbn" class="form-control" placeholder="Поиск по ISBN">
+                </label>
             </div>
         </div>
         <button type="submit" class="btn btn-warning">Искать</button>
@@ -57,7 +63,7 @@
         <tbody>
         <tr th:each="book : ${books}">
             <td th:text="${book.title}"></td>
-            <td th:text="${book.author}"></td>
+            <td th:text="${book.author != null ? book.author.getFullName() : 'Не указан'}"></td>
             <td th:text="${book.isbn}"></td>
             <td th:text="${book.publishedDate}"></td>
             <td th:text="${book.quantity}"></td>

@@ -3,9 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.model.Book;
 import com.example.demo.model.Booking;
 import com.example.demo.service.BookService;
+import com.example.demo.model.User;
 import com.example.demo.service.BookingService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +21,13 @@ public class UserBookController {
 
     private final BookService bookService;
     private final BookingService bookingService;
+    private final UserService userService;
 
     @Autowired
-    public UserBookController(BookService bookService, BookingService bookingService) {
+    public UserBookController(BookService bookService, BookingService bookingService, UserService userService) {
         this.bookService = bookService;
         this.bookingService = bookingService;
+        this.userService = userService;
     }
 
 
@@ -73,7 +76,6 @@ public class UserBookController {
     @PostMapping("/book/{id}")
     public String bookBook(@PathVariable Long id,
                            @RequestParam("quantity") int bookingQuantity,
-                           Authentication authentication,
                            Model model) {
         Book book = bookService.getBookById(id);
 
@@ -86,25 +88,19 @@ public class UserBookController {
         book.setQuantity(book.getQuantity() - bookingQuantity);
         bookService.updateBook(id, book);
 
-        String username = authentication.getName();
+        User user = userService.getCurrentUser();
 
-        bookingService.createBooking(
-                username,
-                book.getTitle(),
-                book.getAuthor(),
-                book.getIsbn(),
-                bookingQuantity,
-                book.getPublishedDate()
-        );
+        bookingService.createBooking(user, book, book.getAuthor());
+
         model.addAttribute("book", book);
         model.addAttribute("message", "Книга успешно забронирована!");
         return "user/booking-success";
     }
 
     @GetMapping("/myBookings")
-    public String viewMyBookings(Authentication authentication, Model model) {
-        String username = authentication.getName();
-        List<Booking> bookings = bookingService.getBookingsByUsername(username);
+    public String viewMyBookings(Model model) {
+        User user = userService.getCurrentUser();
+        List<Booking> bookings = bookingService.getBookingsByUser(user);
         model.addAttribute("bookings", bookings);
         return "user/my-bookings";
     }

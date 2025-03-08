@@ -6,6 +6,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body style="background-color: #3a3a3a;">
+<style>
+    .author-list {
+        border: 1px solid #ccc;
+        max-height: 150px;
+        overflow-y: auto;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        background-color: white;
+    }
+
+    .author-option {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .author-option:hover {
+        background-color: #f0f0f0;
+    }
+</style>
 <div class="container mt-4" style="
     margin-top: 100px !important;
     background-color: aliceblue;
@@ -16,14 +37,22 @@
     padding: 10px;
     gap: 24px;">
     <h1 style="align-self: center">Добавить новую книгу</h1>
-    <form th:action="@{/admin/books/add}" method="post">
+    <form th:action="@{/admin/books/add}" method="post" th:object="${book}">
         <div class="mb-3">
             <label for="title" class="form-label">Название</label>
             <input type="text" id="title" name="title" class="form-control" required/>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 position-relative">
             <label for="author" class="form-label">Автор</label>
-            <input type="text" id="author" name="author" class="form-control" required/>
+            <input type="text" id="author" onkeyup="filterAuthors()" class="form-control" autocomplete="off" required/>
+            <input type="hidden" id="author-id" th:field="*{author}">
+            <div id="author-list" class="dropdown-menu show author-list" style="display: none; position: absolute; width: 100%; background: white; border: 1px solid #ccc;">
+                <div th:each="author : ${authors}"
+                     class="author-option"
+                     onclick="selectAuthor('${author.id}', '${author.surname} ${author.name}')">
+                    ${author.surname} ${author.name}
+                </div>
+            </div>
         </div>
         <div class="mb-3">
             <label for="isbn" class="form-label">ISBN</label>
@@ -31,15 +60,18 @@
         </div>
         <div class="mb-3">
             <label for="publishedDate" class="form-label">Дата публикации</label>
-            <input type="date" id="publishedDate" name="publishedDate" class="form-control"/>
+            <input type="text" id="publishedDate" name="publishedDate" class="form-control"/>
         </div>
         <div class="mb-3">
             <label for="quantity" class="form-label">Количество экземпляров</label>
             <input type="number" id="quantity" name="quantity" class="form-control" required min="0">
         </div>
-        <button type="submit" class="btn btn-outline-primary">Обновить</button>
+        <button type="submit" class="btn btn-outline-primary">Сохранить</button>
         <a href="/admin/books" class="btn btn-outline-danger">Отмена</a>
     </form>
 </div>
+
+<script src="/js/script.js"></script>
+
 </body>
 </html>

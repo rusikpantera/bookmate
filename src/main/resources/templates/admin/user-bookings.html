@@ -19,7 +19,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Логин пользователя</th>
+            <th>ФИО</th>
             <th>Название книги</th>
             <th>Автор</th>
             <th>ISBN</th>
@@ -30,7 +30,7 @@
         </thead>
         <tbody>
         <tr th:each="booking : ${bookings}">
-            <td th:text="${booking.username}"></td>
+            <td th:text="${booking.user.getFullName()}"></td>
             <td th:text="${booking.bookTitle}"></td>
             <td th:text="${booking.author}"></td>
             <td th:text="${booking.isbn}"></td>
